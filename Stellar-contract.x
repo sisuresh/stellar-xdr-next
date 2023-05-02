@@ -71,7 +71,9 @@ enum SCValType
     // symbolic SCVals used as the key for ledger entries for a contract's code
     // and an address' nonce, respectively.
     SCV_LEDGER_KEY_CONTRACT_EXECUTABLE = 20,
-    SCV_LEDGER_KEY_NONCE = 21
+    SCV_LEDGER_KEY_NONCE = 21,
+
+    SCV_STORAGE_TYPE = 22
 };
 
 enum SCStatusType
@@ -261,6 +263,12 @@ case SC_ADDRESS_TYPE_CONTRACT:
     Hash contractId;
 };
 
+enum SCStorageType
+{
+    RESTORABLE = 0,
+    TEMPORARY  = 1
+};
+
 %struct SCVal;
 %struct SCMapEntry;
 
@@ -337,6 +345,9 @@ case SCV_LEDGER_KEY_CONTRACT_EXECUTABLE:
     void;
 case SCV_LEDGER_KEY_NONCE:
     SCNonceKey nonce_key;
+
+case SCV_STORAGE_TYPE:
+    SCStorageType storageType;
 };
 
 struct SCMapEntry

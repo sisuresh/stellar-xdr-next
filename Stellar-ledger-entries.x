@@ -493,10 +493,26 @@ struct LiquidityPoolEntry
     body;
 };
 
+const MASK_CONTRACT_DATA_FLAGS_V20 = 0x1;
+
+enum ContractDataFlags
+{
+    NO_BUMP = 0x1 // Entry does not receive automatic rent bumps on access
+};
+
+enum ContractDataType
+{
+    RESTORABLE = 0,
+    TEMPORARY  = 1
+};
+
 struct ContractDataEntry {
     Hash contractID;
     SCVal key;
     SCVal val;
+    ContractDataType type;
+    uint32 expirationLedger;
+    uint32 flags;
 };
 
 struct ContractCodeEntry {
@@ -602,6 +618,7 @@ case CONTRACT_DATA:
     {
         Hash contractID;
         SCVal key;
+        ContractDataType type;
     } contractData;
 case CONTRACT_CODE:
     struct
