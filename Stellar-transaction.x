@@ -848,56 +848,6 @@ struct LedgerFootprint
     LedgerKey readWrite<>;
 };
 
-enum ArchivalProofType
-{
-    EXISTENCE = 0,
-    NONEXISTENCE = 1
-};
-
-struct ArchivalProofNode
-{
-    uint32 index;
-    Hash hash;
-};
-
-typedef ArchivalProofNode ProofLevel<>;
-
-struct ExistenceProofBody
-{
-    ColdArchiveBucketEntry entriesToProve<>;
-
-    // Vector of vectors, where proofLevels[level]
-    // contains all HashNodes that correspond with that level
-    ProofLevel proofLevels<>;
-};
-
-struct NonexistenceProofBody
-{
-    LedgerKey keysToProve<>;
-
-    // Bounds for each key being proved, where bound[n]
-    // corresponds to keysToProve[n]
-    ColdArchiveBucketEntry lowBoundEntries<>;
-    ColdArchiveBucketEntry highBoundEntries<>;
-
-    // Vector of vectors, where proofLevels[level]
-    // contains all HashNodes that correspond with that level
-    ProofLevel proofLevels<>;
-};
-
-struct ArchivalProof
-{
-    uint32 epoch; // AST Subtree for this proof
-
-    union switch (ArchivalProofType t)
-    {
-    case NONEXISTENCE:
-        NonexistenceProofBody nonexistenceProof;
-    case EXISTENCE:
-        ExistenceProofBody existenceProof;
-    } body;
-};
-
 // Resource limits for a Soroban transaction.
 // The transaction will fail if it exceeds any of these limits.
 struct SorobanResources
@@ -913,6 +863,14 @@ struct SorobanResources
     uint32 writeBytes;
 };
 
+struct SorobanResourcesExtV0
+{
+    // Vector of indices representing what Soroban
+    // entries in the footprint are archived, based on the
+    // order of keys provided in the readWrite footprint.
+    uint32 archivedSorobanEntries<>;
+};
+
 // The transaction extension for Soroban.
 struct SorobanTransactionData
 {
@@ -921,7 +879,7 @@ struct SorobanTransactionData
     case 0:
         void;
     case 1:
-        ArchivalProof proofs<>;
+        SorobanResourcesExtV0 resourceExt;
     } ext;
     SorobanResources resources;
     // Amount of the transaction `fee` allocated to the Soroban resource fees.
