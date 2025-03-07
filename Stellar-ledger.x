@@ -506,7 +506,7 @@ struct TransactionResultMetaV1
     LedgerEntryChanges feeProcessing;
     TransactionMeta txApplyProcessing;
 
-    LedgerEntryChanges postTxApplyProcessing;
+    LedgerEntryChanges postTxApplyFeeProcessing;
 };
 
 // this represents a single upgrade that was performed as part of a ledger
