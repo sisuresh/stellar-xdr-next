@@ -509,6 +509,8 @@ struct TransactionMetaV4
 {
     ExtensionPoint ext;
 
+    LedgerEntryChanges txChangesBeforeBefore;
+
     LedgerEntryChanges txChangesBefore;  // tx level changes before operations
                                          // are applied if any
     OperationMetaV2 operations<>;        // meta for each operation
