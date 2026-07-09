@@ -70,7 +70,11 @@ enum SCValType
     // symbolic SCVals used as the key for ledger entries for a contract's
     // instance and an address' nonce, respectively.
     SCV_LEDGER_KEY_CONTRACT_INSTANCE = 20,
-    SCV_LEDGER_KEY_NONCE = 21
+    SCV_LEDGER_KEY_NONCE = 21,
+
+#ifdef CAP_0085_EXECUTABLE_REF
+    SCV_EXECUTABLE_TAG = 22
+#endif
 };
 
 enum SCErrorType
@@ -165,8 +169,18 @@ struct Int256Parts {
 enum ContractExecutableType
 {
     CONTRACT_EXECUTABLE_WASM = 0,
-    CONTRACT_EXECUTABLE_STELLAR_ASSET = 1
+    CONTRACT_EXECUTABLE_STELLAR_ASSET = 1,
+#ifdef CAP_0085_EXECUTABLE_REF
+    CONTRACT_EXECUTABLE_EXTERNAL_REF = 2
+#endif    
 };
+
+#ifdef CAP_0085_EXECUTABLE_REF
+struct ContractExecutableExternalRef {
+    SCAddress executable_owner;
+    SCString tag;
+};
+#endif
 
 union ContractExecutable switch (ContractExecutableType type)
 {
@@ -174,6 +188,10 @@ case CONTRACT_EXECUTABLE_WASM:
     Hash wasm_hash;
 case CONTRACT_EXECUTABLE_STELLAR_ASSET:
     void;
+#ifdef CAP_0085_EXECUTABLE_REF
+case CONTRACT_EXECUTABLE_EXTERNAL_REF:
+    ContractExecutableExternalRef external_ref;
+#endif
 };
 
 enum SCAddressType
@@ -285,6 +303,11 @@ case SCV_LEDGER_KEY_CONTRACT_INSTANCE:
     void;
 case SCV_LEDGER_KEY_NONCE:
     SCNonceKey nonce_key;
+
+#ifdef CAP_0085_EXECUTABLE_REF
+    case SCV_EXECUTABLE_TAG:
+        SCString executable_tag;
+#endif    
 };
 
 struct SCMapEntry
