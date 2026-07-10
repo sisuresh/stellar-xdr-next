@@ -176,23 +176,18 @@ enum ContractExecutableType
 };
 
 #ifdef CAP_0085_EXECUTABLE_REF
-struct ContractExecutableExternalRef {
-    SCAddress executable_owner;
-    SCString tag;
-};
-#endif
-
+// ContractExecutableExternalRef and the ContractExecutable variant that
+// references it are defined further below, after SCAddress and SCString (the
+// types ContractExecutableExternalRef depends on) have been declared.
+#else
 union ContractExecutable switch (ContractExecutableType type)
 {
 case CONTRACT_EXECUTABLE_WASM:
     Hash wasm_hash;
 case CONTRACT_EXECUTABLE_STELLAR_ASSET:
     void;
-#ifdef CAP_0085_EXECUTABLE_REF
-case CONTRACT_EXECUTABLE_EXTERNAL_REF:
-    ContractExecutableExternalRef external_ref;
-#endif
 };
+#endif
 
 enum SCAddressType
 {
@@ -238,6 +233,23 @@ typedef string SCSymbol<SCSYMBOL_LIMIT>;
 struct SCNonceKey {
     int64 nonce;
 };
+
+#ifdef CAP_0085_EXECUTABLE_REF
+struct ContractExecutableExternalRef {
+    SCAddress executable_owner;
+    SCString tag;
+};
+
+union ContractExecutable switch (ContractExecutableType type)
+{
+case CONTRACT_EXECUTABLE_WASM:
+    Hash wasm_hash;
+case CONTRACT_EXECUTABLE_STELLAR_ASSET:
+    void;
+case CONTRACT_EXECUTABLE_EXTERNAL_REF:
+    ContractExecutableExternalRef external_ref;
+};
+#endif
 
 struct SCContractInstance {
     ContractExecutable executable;
